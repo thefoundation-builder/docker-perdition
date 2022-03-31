@@ -26,7 +26,6 @@ build:
          tag=":$CI_COMMIT_REF_SLUG"
          echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
        fi
-    - ln -s Dockerfile.uptimekumaproxy Dockerfile
     - docker pull $CI_REGISTRY_IMAGE${tag} || true
     - docker build -t "$CI_REGISTRY_IMAGE:testbuild_singlearch" .
     - docker push "$CI_REGISTRY_IMAGE:testbuild_singlearch"
