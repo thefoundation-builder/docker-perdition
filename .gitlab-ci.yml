@@ -28,8 +28,8 @@ build:
        fi
     - ln -s Dockerfile.uptimekumaproxy Dockerfile
     - docker pull $CI_REGISTRY_IMAGE${tag} || true
-    - docker build -t "$CI_REGISTRY_IMAGE${tag}_testbuild_singlearch" .
-    - docker push "$CI_REGISTRY_IMAGE${tag}_testbuild_singlearch"
+    - docker build -t "$CI_REGISTRY_IMAGE:testbuild_singlearch" .
+    - docker push "$CI_REGISTRY_IMAGE:testbuild_singlearch"
     - docker buildx create --use
     - docker build . && docker buildx build  --platform linux/arm64/v8,linux/amd64,linux/386,linux/arm/v7 --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache  --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache --tag $CI_REGISTRY_IMAGE${tag}  . 
 
