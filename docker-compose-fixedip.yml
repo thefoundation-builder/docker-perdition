@@ -19,7 +19,8 @@ services:
     networks:
       mail:
         ipv4_address: ${FIXEDIP:-0.0.0.0}
-
+    env_file:                                                                                                                                 
+     - ./.env   
     ports:
       - ${BINDIP:-127.0.0.1}:25143:25143
       - ${BINDIP:-127.0.0.1}:25993:25993
