@@ -33,7 +33,7 @@ build:
     - docker build -t "$CI_REGISTRY_IMAGE:testbuild_singlearch" .
     - docker push "$CI_REGISTRY_IMAGE:testbuild_singlearch"
     - docker buildx create --use
-    - docker build . && docker buildx build  --platform $ARCHSTRING --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache  --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache --tag $CI_REGISTRY_IMAGE${tag}  . 
+    - docker build . && docker buildx build  --platform $ARCHSTRING --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache  --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache --tag $CI_REGISTRY_IMAGE${tag} --push . 
 
   rules:
     - if: $CI_COMMIT_BRANCH
