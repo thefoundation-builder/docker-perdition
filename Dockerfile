@@ -1,2 +1,7 @@
 FROM alpine
-RUN apk --no-cache upgrade && apk --no-cache add perdition socat curl iproute2
+RUN apk --no-cache upgrade && apk --no-cache add perdition  iproute2 socat bash openssl  curl
+RUN uname -a |grep aarch64 || go get -u -v github.com/wzshiming/bridge/cmd/bridge
+RUN uname -a |grep aarch64 && link=$(wget -O- https://github.com/wzshiming/bridge/releases|grep bridge_linux_arm64 |grep href|head -n1|cut -d'"' -f2) && bash -c '[[ -z "'$link'" ]] || wget -c https://github.com/"'$link'" -O /bridge'
+RUN chmod +x /bridge
+
+
