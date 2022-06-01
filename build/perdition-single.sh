@@ -1,5 +1,7 @@
 #!/bin/bash
 echo "TARGETING $IMAPTARGET"
+[[ -z "$IMAPTARGET" ]] && echo "NO TARGET"
+[[ -z "$IMAPTARGET" ]] && exit 1
 PREFIX=
 mkdir  -p /usr/var/run/perdition.imap4s ;
 
