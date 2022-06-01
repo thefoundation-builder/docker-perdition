@@ -1,0 +1,41 @@
+version: '3'
+#networks:
+#  mail:
+#    external: true
+networks:
+  mail:
+    external:
+      name: ${MAIL_NETWORK:-mail_network}
+
+
+services:
+  perdition:
+    hostname: ${IMAPTARGET}.perdition.lan
+    container_name: ${IMAPTARGET}.perdition.lan
+    build: .
+    command: /bin/bash -c "bash /perdition-single.sh"
+    volumes:
+      - /dev/shm/perdition.${IMAPTARGET}:/etc/perdition
+    networks:
+      mail:
+        ipv4_address: ${FIXEDIP:-0.0.0.0}
+
+    ports:
+      - ${BINDIP:-127.0.0.1}:25143:25143
+      - ${BINDIP:-127.0.0.1}:25993:25993
+
+## A using a created network 
+##docker network create --gateway 172.25.25.1 --subnet 172.25.25.0/24 --opt com.docker.network.bridge.name=mailrelay mailrelay
+#networks:
+#   mailrelay:
+#    external: true
+#    ipam:
+#      config:
+#        - subnet: 172.25.25.0/24
+
+# B using an existing network
+networks:
+  mail:
+    ipam:
+      config:
+        - subnet: ${FIXEDNET:-0.0.0.0/0}
