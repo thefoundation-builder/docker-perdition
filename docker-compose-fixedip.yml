@@ -24,11 +24,10 @@ services:
       - ${BINDIP:-127.0.0.1}:25143:25143
       - ${BINDIP:-127.0.0.1}:25993:25993
 
-## A using a created network 
 ##docker network create --gateway 172.25.25.1 --subnet 172.25.25.0/24 --opt com.docker.network.bridge.name=mailrelay mailrelay
+## A using a existing network 
 #networks:
 #   mailrelay:
-#    external: true
 #    ipam:
 #      config:
 #        - subnet: 172.25.25.0/24
@@ -36,6 +35,7 @@ services:
 # B using an existing network
 networks:
   mail:
+    external: true
     ipam:
       config:
         - subnet: ${FIXEDNET:-0.0.0.0/0}
