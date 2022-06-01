@@ -26,7 +26,7 @@ echo  perdition.imap4s --ssl_mode ssl_all --connect_relog 600 --no_daemon --prot
       perdition.imap4s --ssl_mode ssl_all --connect_relog 600 --no_daemon --protocol IMAP4S -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive
 sleep 1;
 done ) &
-
+done
 
 ## imap perdition
 for rport in 143:143 ;do
@@ -35,5 +35,5 @@ echo  perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon 
       perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive
 sleep 1;
 done ) &
-
+done
 wait
