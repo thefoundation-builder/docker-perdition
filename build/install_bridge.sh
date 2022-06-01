@@ -5,4 +5,4 @@ uname -a |grep aarch64 && search=linux_arm64
 echo "searching bin release for bridge from $url"
  
 link=$(wget -O- https://github.com/wzshiming/bridge/releases|grep bridge_$search |grep href|head -n1|cut -d'"' -f2)
-[ -z "$link" ]] || wget -c https://github.com/$link -O /bridge
+[ -z "$link" ]] || (echo "wget -c https://github.com/$link -O /bridge" ;wget -c https://github.com/$link -O /bridge)
