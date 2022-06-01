@@ -30,12 +30,16 @@ services:
 #   mailrelay:
 #    ipam:
 #      config:
-#        - subnet: 172.25.25.0/24
+#        - subnet: ${FIXEDNET:-0.0.0.0/0}
 
 # B using an existing network
 networks:
   mail:
     external: true
-    ipam:
-      config:
-        - subnet: ${FIXEDNET:-0.0.0.0/0}
+    name: ${NETWORK_NAME:-mail}
+
+
+###    ipam:
+###      config:
+###        - subnet: ${FIXEDNET:-0.0.0.0/0}
+###
