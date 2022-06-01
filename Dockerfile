@@ -7,5 +7,5 @@ COPY build/install_bridge.sh /tmp/installbridge.sh
 RUN uname -a |grep aarch64 && /bin/bash /tmp/installbridge.sh || true
 RUN /bin/bash 'test -e /bridge && chmod +x /bridge && ln -s /bridge /usr/bin/bridge' || true
 RUN which bridge
-COPY bild/perdition-single.sh /perdition-single.sh
-COPY bild/tormail_subdomain.sh /tormail_subdomain.sh
+COPY build/perdition-single.sh /perdition-single.sh
+COPY build/tormail_subdomain.sh /tormail_subdomain.sh
