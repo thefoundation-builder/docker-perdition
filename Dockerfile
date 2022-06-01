@@ -9,4 +9,5 @@ RUN /bin/bash 'test -e /bridge && chmod +x /bridge && ln -s /bridge /usr/bin/bri
 RUN which bridge
 COPY build/perdition-single.sh /perdition-single.sh
 COPY build/tormail_subdomain.sh /tormail_subdomain.sh
-EXPOSE 143,993
+EXPOSE 143
+EXPOSE 993
