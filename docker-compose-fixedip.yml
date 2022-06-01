@@ -35,9 +35,8 @@ services:
 # B using an existing network
 networks:
   mail:
-    external: true
-      name: ${MAIL_NETWORK:-mail}
-
+    external:
+      name: ${MAIL_NETWORK:-nginx-proxy}
 
 ###    ipam:
 ###      config:
