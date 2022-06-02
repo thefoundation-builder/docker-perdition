@@ -30,7 +30,7 @@ services:
 networks:
   mail:
     external:
-      name: ${MAIL_NETWORK:-nginx-proxy}
+      name: ${MAIL_NETWORK:-mail}
 
 ###    ipam:
 ###      config:
