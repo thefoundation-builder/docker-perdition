@@ -21,12 +21,22 @@ cat dhparams.pem >> perdition.crt.pem
 )
 
 
+##non-ssl to port 4191
+for  rport in 4191:4190;do 
+  ( while (true) ;do  
+    #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr OPENSSL-CONNECT:$IMAPTARGET:${rport/*:/},verify=0
+    sleep 1;
+   done ) &
+done
+
 for  rport in 4190:4190;do 
   ( while (true) ;do  
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
     socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/}
     sleep 1;
    done ) &
+   
 done
 
 

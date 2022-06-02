@@ -12,3 +12,4 @@ COPY build/tormail_subdomain.sh /tormail_subdomain.sh
 EXPOSE 143
 EXPOSE 993
 EXPOSE 4190
+EXPOSE 4191
