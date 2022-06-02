@@ -11,3 +11,4 @@ COPY build/perdition-single.sh /perdition-single.sh
 COPY build/tormail_subdomain.sh /tormail_subdomain.sh
 EXPOSE 143
 EXPOSE 993
+EXPOSE 4190
