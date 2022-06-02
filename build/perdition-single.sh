@@ -20,6 +20,15 @@ test -e perdition.crt.pem || (
 cat dhparams.pem >> perdition.crt.pem
 )
 
+
+for  rport in 4190:4190;do 
+  ( while (true) ;do  
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
+    sleep 1;
+   done ) &
+done
+
+
 ## imaps perdition
 for rport in 993:993 ;do
 #( while (true) ;do   /bridge -b :${PREFIX}${rport/:*/} -p $IMAPTARGET:${rport/*:/} -p socks5://$TORHOST:9050;sleep 2;done ) &
