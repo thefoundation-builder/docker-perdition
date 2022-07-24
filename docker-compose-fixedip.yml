@@ -5,6 +5,7 @@ services:
   perdition:
     hostname: ${IMAPTARGET}.perdition.lan
     container_name: ${IMAPTARGET}.perdition.lan
+    restart: unless-stopped
     build: .
     command: /bin/bash -c "bash /perdition-single.sh"
     volumes:
