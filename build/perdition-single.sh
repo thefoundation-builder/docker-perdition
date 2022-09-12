@@ -42,7 +42,7 @@ protocol_log_filename /dev/stdout
 syslog_facility LOG_MAIL
 #syslog_prioritymask LOG_WARNING
 send_tcp_keepalives no
-enable_select_cache no
+enable_select_cache yes
 foreground_mode yes
 force_tls yes
 chroot_directory /var/lib/imapproxy/chroot
