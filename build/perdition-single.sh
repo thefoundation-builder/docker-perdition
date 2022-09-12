@@ -24,14 +24,16 @@ cat dhparams.pem >> perdition.crt.pem
 )
 
 test -e /etc/myimapproxy.conf || {  
-( echo "server_hostname $IMAPTARGET" 
+( 
+#echo "server_hostname $IMAPTARGET" 
+echo "server_hostname 127.0.0.1" 
 echo 'connect_retries 10
 connect_delay 5
 cache_size 3072
 listen_port 1143
 #listen_address 127.0.0.1
 # 
-server_port 143
+server_port 2143
 cache_expiration_time 300
 proc_username nobody
 proc_groupname nogroup
@@ -42,7 +44,7 @@ syslog_facility LOG_MAIL
 send_tcp_keepalives no
 enable_select_cache no
 foreground_mode yes
-force_tls yes
+force_tls no
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
@@ -69,7 +71,17 @@ tls_verify_server no
 echo -n ; } ;
 
 
-##non-ssl with pre-sent starttls  to port 4192
+##non-ssl imap with pre-sent starttls  to port 2143
+for  rport in 2143:143;do 
+  ( while (true) ;do  
+    #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
+    #socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr OPENSSL-CONNECT:$IMAPTARGET:${rport/*:/},verify=0
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls imap -quiet -connect '$IMAPTARGET'\:'${rport/*:/} 2>&1|grep -i -e OK -e rror | while read logline;do echo $(date -u +%c" imap.socat: ")"$logline";done
+    sleep 1;
+   done ) &
+done
+
+##non-ssl sieve with pre-sent starttls  to port 4192
 for  rport in 4192:4190;do 
   ( while (true) ;do  
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
