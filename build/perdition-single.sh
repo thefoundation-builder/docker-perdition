@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "TARGETING $IMAPTARGET"
 logfilter() { cat ; } ;
-[[ "$DEBUG" = "true" ]] || logfilter() { grep -v -e "Connect:"  -e 'server-secure=starttls status="ok"' ; } ;
+[[ "$DEBUG" = "true" ]] || logfilter() { grep -v -e "Connect:"  -e 'server-secure=starttls status="ok"'  -e 'server-secure=plaintext status="ok"' ; } ;
 
 [[ -z "$IMAPTARGET" ]] && echo "NO TARGET"
 [[ -z "$IMAPTARGET" ]] && exit 1
