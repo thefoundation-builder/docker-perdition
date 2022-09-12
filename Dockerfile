@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:20.04
 RUN apt-get update && apt-get -y install iproute2 imapproxy perdition curl bash && apt-get -y clean all 
 
 #FROM alpine
