@@ -23,6 +23,34 @@ test -e perdition.crt.pem || (
 cat dhparams.pem >> perdition.crt.pem
 )
 
+test -e /etc/imapproxy.conf || {  
+echo "server_hostname $IMAPTARGET" 
+echo 'connect_retries 10
+connect_delay 5
+cache_size 3072
+listen_port 143
+#listen_address 127.0.0.1
+server_port 143
+cache_expiration_time 300
+proc_username nobody
+proc_groupname nobody
+stat_filename /var/run/pimpstats143
+protocol_log_filename /dev/stdout
+syslog_facility LOG_MAIL
+send_tcp_keepalives yes
+enable_select_cache yes
+foreground_mode yes
+force_tls no
+#chroot_directory /var/empty
+enable_admin_commands no
+#
+## Various path options for SSL CA certificates/directories
+#
+#tls_ca_file /usr/share/ssl/certs/ca-bundle.crt
+#tls_ca_path /usr/share/ssl/certs/
+#tls_cert_file /usr/share/ssl/certs/mycert.crt
+#tls_key_file /usr/share/ssl/certs/mycert.key') > /etc/imapproxy.conf
+; } ;
 
 
 ##non-ssl with pre-sent starttls  to port 4192
@@ -67,8 +95,9 @@ done
 ## imap perdition
 for rport in 143:143 ;do
 ( while (true) ;do  
-echo  perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive
-      perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive --no_bind_banner --server_resp_line  2>&1|logfilter
+#echo  perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive
+#      perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/*:/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive --no_bind_banner --server_resp_line  2>&1|logfilter
+/usr/sbin/imapproxyd -f /etc/imapproxy.conf -p /tmp/imapproxy.pid;
 sleep 1;
 done ) &
 done
