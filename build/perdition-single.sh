@@ -21,6 +21,17 @@ cat dhparams.pem >> perdition.crt.pem
 )
 
 
+
+##non-ssl with pre-sent starttls  to port 4192
+for  rport in 4192:4190;do 
+  ( while (true) ;do  
+    #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
+    #socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr OPENSSL-CONNECT:$IMAPTARGET:${rport/*:/},verify=0
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls sieve -quiet -connect '$IMAPTARGET'\:':${rport/*:/} 2>&1|grep -i -e OK -e rror
+    sleep 1;
+   done ) &
+done
+
 ##non-ssl to port 4191
 for  rport in 4191:4190;do 
   ( while (true) ;do  
