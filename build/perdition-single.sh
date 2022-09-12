@@ -24,7 +24,7 @@ cat dhparams.pem >> perdition.crt.pem
 )
 
 test -e /etc/imapproxy.conf || {  
-echo "server_hostname $IMAPTARGET" 
+( echo "server_hostname $IMAPTARGET" 
 echo 'connect_retries 10
 connect_delay 5
 cache_size 3072
