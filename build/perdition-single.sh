@@ -50,7 +50,7 @@ enable_admin_commands no
 #tls_ca_path /usr/share/ssl/certs/
 #tls_cert_file /usr/share/ssl/certs/mycert.crt
 #tls_key_file /usr/share/ssl/certs/mycert.key') > /etc/imapproxy.conf
-; } ;
+echo -n ; } ;
 
 
 ##non-ssl with pre-sent starttls  to port 4192
