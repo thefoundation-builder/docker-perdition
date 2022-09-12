@@ -46,8 +46,8 @@ force_tls yes
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
-#tls_ca_file /usr/share/ssl/certs/ca-bundle.crt
-#tls_ca_path /usr/share/ssl/certs/
+tls_ca_file /usr/share/ssl/certs/ca-bundle.crt
+tls_ca_path /usr/share/ssl/certs/
 #tls_cert_file /etc/perdition/perdition.crt.pem
 #tls_key_file  /etc/perdition/perdition.key.pem
 tls_verify_server no
