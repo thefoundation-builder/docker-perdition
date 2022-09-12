@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-RUN apt-get update && apt-get -y install iproute2 imapproxy perdition curl bash && apt-get -y clean all 
+RUN apt-get update && apt-get -y install iproute2 imapproxy perdition curl socat openssl bash && apt-get -y clean all 
 
 #FROM alpine
 #RUN apk --no-cache upgrade && apk --no-cache add perdition  iproute2 socat bash openssl  curl
