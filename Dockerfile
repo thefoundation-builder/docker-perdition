@@ -1,4 +1,4 @@
-#FROM alpine
+FROM alpine
 #FROM golang:1.17-alpine
 ##FROM golang:alpine
 RUN apk --no-cache upgrade && apk --no-cache add perdition  iproute2 socat bash openssl  curl
