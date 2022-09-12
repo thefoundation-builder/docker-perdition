@@ -42,7 +42,7 @@ syslog_facility LOG_MAIL
 send_tcp_keepalives no
 enable_select_cache no
 foreground_mode yes
-force_tls no
+force_tls yes
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
