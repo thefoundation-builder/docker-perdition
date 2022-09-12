@@ -5,7 +5,8 @@ Generic perdition image spawning socat instances for sieve
 see dotENV.example and the compose files for reference
 
 * usable with rainloop   ( sieve port 4190 STARTTLS )
-* usable with afterlogic ( sieve port 4191 UNENCRYPTED )
+* usable with afterlogic ( sieve port 4191 UNENCRYPTED IF YOUR 4190 is a SSL Socket )
+* usable with cypht      ( sieve port 4192 UNENCRYPTED WITH PRE-SENT STARTTLS TO IMAPTARGET )
 
 ---
 
