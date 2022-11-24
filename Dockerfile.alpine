@@ -13,7 +13,7 @@ RUN cd / && apk add --no-cache  tzdata  && cp /usr/share/zoneinfo/Europe/Budapes
  patch -p1 < debian/patches/fix-ssl-types.patch           && \
  patch -p1 < debian/patches/move-pidfile-to-run.patch     && \
  patch -p1 < debian/patches/openssl-1.1.patch             && \
- sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) --prefix=/usr && make && make install  && cd /  && rm -fr imapproxy  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages && which in.imapproxyd
+ sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;        armv7l)\n                basic_machine=armv7l  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) --prefix=/usr && make && make install  && cd /  && rm -fr imapproxy  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages && which in.imapproxyd
 
 RUN apk add curl bash perdition
 ## supervisor
