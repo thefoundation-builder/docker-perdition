@@ -8,7 +8,7 @@ stages:
   - mirror
   
 variables:
-  MIRROR_REPOSITORY: "git@github.com:thefoundation-builder/remark42-$CI_PROJECT_NAME.git"
+  MIRROR_REPOSITORY: "git@github.com:thefoundation-builder/$CI_PROJECT_NAME.git"
 
 mirror-github:
   stage: mirror
