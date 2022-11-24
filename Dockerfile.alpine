@@ -15,7 +15,7 @@ RUN cd / && apk add --no-cache  tzdata  && cp /usr/share/zoneinfo/Europe/Budapes
  patch -p1 < debian/patches/openssl-1.1.patch             && \
  sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) --prefix=/usr && make && make install  && cd /  && rm -fr imapproxy  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages && which in.imapproxyd
 
-apk add curl bash perdition
+RUN apk add curl bash perdition
 ## supervisor
 COPY build/perdition-single.sh /perdition-single.sh
 EXPOSE 143
