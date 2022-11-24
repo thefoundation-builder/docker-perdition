@@ -1,4 +1,6 @@
-FROM ubuntu:20.04
+FROM ubuntu:bionic
+#FROM ubuntu:20.04
+
 RUN apt-get update && apt-get -y install iproute2 net-tools imapproxy perdition curl bash socat openssl && apt-get -y clean all 
 
 #FROM alpine
