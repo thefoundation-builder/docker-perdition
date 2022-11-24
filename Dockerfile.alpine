@@ -1,0 +1,27 @@
+FROM alpine
+
+#cd / && apk add --no-cache curl  && curl "https://downloads.sourceforge.net/project/squirrelmail/imap_proxy/1.2.7/squirrelmail-imap_proxy-1.2.7.tar.gz" -sL|tar xvz && apk add --no-cache libnsl tzdata  && cp /usr/share/zoneinfo/Europe/Budapest /etc/localtime  && echo "Europe/Budapest" > /etc/timezone  && apk add tar gzip ca-certificates openssl-dev rsyslog  && apk add --virtual .build-deps ncurses-dev libtool make grep autoconf gcc libc-dev  && cd /squirrelmail-imap_proxy-1.2.7  && sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) && make && make install  && cd /  && rm -fr squirrelmail-imap_proxy-1.2.7  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages
+
+RUN cd / && apk add --no-cache  tzdata  && cp /usr/share/zoneinfo/Europe/Budapest /etc/localtime  && \
+ echo "Europe/Budapest" > /etc/timezone  && apk add  --no-cache tar gzip ca-certificates openssl-dev rsyslog  && \
+ apk add --virtual .build-deps ncurses-dev libtool make grep autoconf gcc libc-dev git patch  && \
+ git clone https://salsa.debian.org/debian/imapproxy.git /imapproxy && mkdir /imapproxy/bin && cd /imapproxy && \
+ patch -p1 < debian/patches/remove-unused-variables.patch && \
+ patch -p1 < debian/patches/fix-size_t-formatters.patch   && \
+ patch -p1 < debian/patches/fix-socklen_t-types.patch     && \
+ patch -p1 < debian/patches/fix-egd-ifdef.patch           && \
+ patch -p1 < debian/patches/fix-ssl-types.patch           && \
+ patch -p1 < debian/patches/move-pidfile-to-run.patch     && \
+ patch -p1 < debian/patches/openssl-1.1.patch             && \
+ sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) --prefix=/usr && make && make install  && cd /  && rm -fr imapproxy  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages && which in.imapproxyd
+
+apk add curl bash perdition
+## supervisor
+COPY build/perdition-single.sh /perdition-single.sh
+EXPOSE 143
+EXPOSE 993
+EXPOSE 4190
+EXPOSE 4191
+EXPOSE 4192
+
+

@@ -59,7 +59,7 @@ jobs:
 ######          user-email: actions@github.com
 ######          target-branch: main
 
-  build-base-go:
+  build-ubuntu:
     runs-on: ubuntu-latest
     env:
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
@@ -97,7 +97,56 @@ jobs:
         run: echo "pushing to $CI_REGISTRY_IMAGE cached by $BUILDCACHE"
       - name: build images
 #        run: sudo /bin/bash -c "export REGISTRY_PASSWORD=$REGISTRY_PASSWORD;export REGISTRY_HOST=docker.io;export REGISTRY_PROJECT=thefoundation;export PROJECT_NAME=hocker;export REGISTRY_USER=${{ secrets.REGISTRY_USER }} ;bash _build_hocker.sh base-focal "
-        run: git clone https://github.com/umputun/baseimage.git /tmp/baseimage && cd /tmp/baseimage && 	docker buildx build --platform ${PLATFORMS}  --pull --cache-to=type=registry,ref=$BUILDCACHE:baseimage_buildgo --cache-from=type=registry,ref=$BUILDCACHE:baseimage_buildgo -t $CI_REGISTRY_IMAGE:baseimage_buildgo build.go -f build.go/Dockerfile
+        run: git clone https://github.com/umputun/baseimage.git /tmp/baseimage && cd /tmp/baseimage && 	docker buildx build --platform ${PLATFORMS}  --pull --cache-to=type=registry,ref=$BUILDCACHE:zzz_buildcache_${{ github.event.repository.name }}_perdition_ubuntu --cache-from=type=registry,ref=zzz_buildcache_${{ github.event.repository.name }}_perdition_ubuntu-t $CI_REGISTRY_IMAGE:ubuntu  -f Dockerfile.alpine .
+      - name: show files
+#        run: bash -c "ls buildlogs/  -lh1 ; tail -n 20 buildlogs/*"
+        run: docker image ls 
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+         name: buildlogs
+         path: |
+              buildlogs
+  build-alpine:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+      APT_HTTP_PROXY_URL: ${{ secrets.APT_HTTP_PROXY_URL }}
+
+    environment: push-dockerhub
+    permissions:
+      packages: write
+      contents: read
+    if: github.repository_owner == 'thefoundation-builder'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+#      - name: Login to Docker Hub
+#        uses: docker/login-action@v2
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: current images
+        run: docker image ls
+      - name: show steps
+        run: echo "pushing to $CI_REGISTRY_IMAGE cached by $BUILDCACHE"
+      - name: build images
+#        run: sudo /bin/bash -c "export REGISTRY_PASSWORD=$REGISTRY_PASSWORD;export REGISTRY_HOST=docker.io;export REGISTRY_PROJECT=thefoundation;export PROJECT_NAME=hocker;export REGISTRY_USER=${{ secrets.REGISTRY_USER }} ;bash _build_hocker.sh base-focal "
+        run: git clone https://github.com/umputun/baseimage.git /tmp/baseimage && cd /tmp/baseimage && 	docker buildx build --platform ${PLATFORMS}  --pull --cache-to=type=registry,ref=$BUILDCACHE:zzz_buildcache_${{ github.event.repository.name }}_perdition_alpine --cache-from=type=registry,ref=zzz_buildcache_${{ github.event.repository.name }}_perdition_alpine -t $CI_REGISTRY_IMAGE:alpine -f Dockerfile.alpine .
       - name: show files
 #        run: bash -c "ls buildlogs/  -lh1 ; tail -n 20 buildlogs/*"
         run: docker image ls 
