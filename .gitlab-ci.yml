@@ -1,45 +1,74 @@
-
-image: jdrouet/docker-with-buildx:stable
-
+image: alpine
+before_script:
+   - apk --update add openssh-client git bash curl
+   - /bin/bash -c "uptime ; curl -s ifconfig.co"
+#  - /bin/bash -c "test -d $HOME && (test -d ${HOME}/.ssh || mkdir -p  $HOME/.ssh) || mkdir -p  $HOME/.ssh "
+#  - ssh-keyscan -t rsa,dsa,ecdsa github.com >> ~/.ssh/ssh_known_hosts
+stages:
+  - mirror
+  
 variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
+  MIRROR_REPOSITORY: "git@github.com:thefoundation-builder/remark42-$CI_PROJECT_NAME.git"
 
-services:
-  - docker:dind
-
-build:
-  stage: build
-  tags:
-    - docker
-    - linux
-  variables:
-    BUILDER_IMAGE: ${REGISTRY_HOST}/${REGISTRY_PROJECT}/${CI_PROJECT_NAME}
-#    ARCHSTRING: linux/arm64/v8,linux/amd64,linux/386,linux/arm/v7 
-    PLATFORMS: linux/arm64/v8,linux/amd64
-
+mirror-github:
+  stage: mirror
+  cache: {}
   script:
-   # - docker info
-    - |
-       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-         tag=""
-         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
-       else
-         tag=":$CI_COMMIT_REF_SLUG"
-         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
-       fi
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY 
-    - docker pull $CI_REGISTRY_IMAGE${tag} || true
-    - docker build -t "$CI_REGISTRY_IMAGE:testbuild_singlearch" .
-    - docker push "$CI_REGISTRY_IMAGE:testbuild_singlearch"
-    - docker buildx create --use
-    - docker buildx build  --platform $PLATFORMS --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache  --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache --tag $CI_REGISTRY_IMAGE${tag} --push . 
+    # set our privkey
+    - echo "${git64key}" |base64 -d > mybasekey
+    # Do a mirror clone of the repository
+    -  git clone --mirror $CI_REPOSITORY_URL
+    # Mirror push it to the destination
 
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
-  rules:
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - Dockerfile
+    -  teste -e $CI_PROJECT_NAME && cd $CI_PROJECT_NAME;test -e $CI_PROJECT_NAME.git &&  cd $CI_PROJECT_NAME.git ; ssh-agent bash -c " chmod 0600 ../mybasekey ;ssh-add ../mybasekey ;test -d $HOME && (test -d ${HOME}/.ssh || mkdir -p  $HOME/.ssh) || mkdir -p  $HOME/.ssh;(ssh-keyscan -t rsa,dsa,ecdsa github.com  ;ssh-keyscan -t rsa,dsa,ecdsa gitlab.com ) |tee  ~/.ssh/known_hosts ~/.ssh/ssh_known_hosts ;git push --force --mirror $MIRROR_REPOSITORY "
+    - cd ..; rm -rf $CI_PROJECT_NAME.git $CI_PROJECT_NAME.git mybasekey
+
+
+
+
+##
+##image: jdrouet/docker-with-buildx:stable
+##
+##variables:
+##  DOCKER_HOST: tcp://docker:2375/
+##  DOCKER_DRIVER: overlay2
+##
+##services:
+##  - docker:dind
+##
+##build:
+##  stage: build
+##  tags:
+##    - docker
+##    - linux
+##  variables:
+##    BUILDER_IMAGE: ${REGISTRY_HOST}/${REGISTRY_PROJECT}/${CI_PROJECT_NAME}
+###    ARCHSTRING: linux/arm64/v8,linux/amd64,linux/386,linux/arm/v7 
+##    PLATFORMS: linux/arm64/v8,linux/amd64
+##
+##  script:
+##   # - docker info
+##    - |
+##       if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+##         tag=""
+##         echo "Running on default branch '$CI_DEFAULT_BRANCH': tag = 'latest'"
+##       else
+##         tag=":$CI_COMMIT_REF_SLUG"
+##         echo "Running on branch '$CI_COMMIT_BRANCH': tag = $tag"
+##       fi
+##    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY 
+##    - docker pull $CI_REGISTRY_IMAGE${tag} || true
+##    - docker build -t "$CI_REGISTRY_IMAGE:testbuild_singlearch" .
+##    - docker push "$CI_REGISTRY_IMAGE:testbuild_singlearch"
+##    - docker buildx create --use
+##    - docker buildx build  --platform $PLATFORMS --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache  --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:zzz_buildcache --tag $CI_REGISTRY_IMAGE${tag} --push . 
+##
+##  rules:
+##    - if: $CI_COMMIT_BRANCH
+##      exists:
+##        - Dockerfile
+##  rules:
+##    - if: $CI_COMMIT_BRANCH
+##      exists:
+##        - Dockerfile
+##
