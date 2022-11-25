@@ -15,7 +15,11 @@ cd /etc/perdition
 test -e perdition.crt.pem || (
   test -e dhparams.pem      || openssl dhparam -out dhparams.pem -dsaparam 4096 &
   test -e perdition.key.pem || (
-   ( echo;echo;echo;echo;echo;echo;echo;echo;echo;echo;echo;echo) | openssl req -new -x509 -nodes -out perdition.crt.pem -keyout perdition.key.pem -newkey rsa:4096 -days 3650 
+   #( echo;echo;echo;echo;echo;echo;echo;echo;echo;echo;echo;echo) | openssl req -new -x509 -nodes -out perdition.crt.pem -keyout perdition.key.pem -newkey rsa:4096 -days 3650 
+   myhost=$(hostname -f)
+   [[ -z "$myhost" ]] && myhost=$(hostname)
+   [[ -z "$myhost" ]] && myhost=perdition.lan
+    openssl req -x509 -nodes -days 365 -subj '/C=XX/ST=STA/O=SelfSigned, Inc./CN='${myhost} -addext 'subjectAltName=DNS:www.'${myhost} -newkey rsa:4096 -keyout perdition.key.pem -out perdition.crt.pem 2>&1|grep -v -e '\.' -e -- '-'
          ) &
   wait 
 
