@@ -1,4 +1,6 @@
 FROM alpine
+RUN apk add curl bash perdition socat
+## supervisor
 
 #cd / && apk add --no-cache curl  && curl "https://downloads.sourceforge.net/project/squirrelmail/imap_proxy/1.2.7/squirrelmail-imap_proxy-1.2.7.tar.gz" -sL|tar xvz && apk add --no-cache libnsl tzdata  && cp /usr/share/zoneinfo/Europe/Budapest /etc/localtime  && echo "Europe/Budapest" > /etc/timezone  && apk add tar gzip ca-certificates openssl-dev rsyslog  && apk add --virtual .build-deps ncurses-dev libtool make grep autoconf gcc libc-dev  && cd /squirrelmail-imap_proxy-1.2.7  && sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) && make && make install  && cd /  && rm -fr squirrelmail-imap_proxy-1.2.7  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages
 
@@ -15,12 +17,19 @@ RUN cd / && apk add --no-cache  tzdata  && cp /usr/share/zoneinfo/Europe/Budapes
  patch -p1 < debian/patches/openssl-1.1.patch             && \
  sed 's/netwinder)/aarch64)\n                basic_machine=arm64v8\n                os=-linux\n                ;;\n        armhf)\n                basic_machine=armhf  \n                os=-linux\n                ;;        armv7l)\n                basic_machine=armv7l  \n                os=-linux\n                ;;\n        netwinder)/g' -i config.sub     && chmod a+rw . && ./configure --build=$(uname -m) --prefix=/usr && make && make install  && cd /  && rm -fr imapproxy  && apk del .build-deps  && ln -sf /dev/stdout /var/log/maillog  && ln -sf /dev/stderr /var/log/maillog  && ln -sf /dev/stdout /var/log/messages  && ln -sf /dev/stderr /var/log/messages && which in.imapproxyd && ln -s $(which  in.imapproxyd) /usr/sbin/imapproxyd
 
-RUN apk add curl bash perdition socat
-## supervisor
+
 COPY build/perdition-single.sh /perdition-single.sh
 EXPOSE 143 993 4190 4191 4192
-LABEL org.opencontainers.image.source  "https://gitlab.com/the-foundation/docker-perdition" 
-LABEL org.opencontainers.image.description docker-perdition multiarch ubuntu version . over 100MB
-
-
+LABEL org.opencontainers.image.source="https://gitlab.com/the-foundation/docker-perdition" 
+LABEL org.opencontainers.image.description=docker-perdition multiarch ubuntu version . over 100MB
+LABEL org.opencontainers.image.created=
+LABEL org.opencontainers.image.authors=The Foundation <no@mail.lan>
+LABEL org.opencontainers.image.url=https://the-foundation.gitlab.io/
+LABEL org.opencontainers.image.documentation=https://gitlab.com/the-foundation/docker-perdition
+LABEL org.opencontainers.image.version=
+LABEL org.opencontainers.image.revision=Source control revision identifier for the packaged software.
+LABEL org.opencontainers.image.licenses=BSD-3-Clause
+LABEL org.opencontainers.image.ref.name=
+LABEL org.opencontainers.image.title=Docker Perdition with imapproxy image 
+LABEL org.opencontainers.image.base.name=ghcr.io/thefoundation-builder/docker-perdition:alpine
 
