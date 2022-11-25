@@ -20,13 +20,13 @@ EXPOSE 143 993 4190 4191 4192
 LABEL org.opencontainers.image.source="https://gitlab.com/the-foundation/docker-perdition" 
 LABEL org.opencontainers.image.description=docker-perdition multiarch ubuntu version . over 100MB
 LABEL org.opencontainers.image.created=
-LABEL org.opencontainers.image.authors=The Foundation <no@mail.lan>
+LABEL org.opencontainers.image.authors="The Foundation <no@mail.lan>"
 LABEL org.opencontainers.image.url=https://the-foundation.gitlab.io/
 LABEL org.opencontainers.image.documentation=https://gitlab.com/the-foundation/docker-perdition
 LABEL org.opencontainers.image.version=
-LABEL org.opencontainers.image.revision=Source control revision identifier for the packaged software.
+LABEL org.opencontainers.image.revision="Source control revision identifier for the packaged software."
 LABEL org.opencontainers.image.licenses=BSD-3-Clause
 LABEL org.opencontainers.image.ref.name=
-LABEL org.opencontainers.image.title=Docker Perdition with imapproxy image 
+LABEL org.opencontainers.image.title="Docker Perdition with imapproxy image (ubuntu)"
 LABEL org.opencontainers.image.base.name=ghcr.io/thefoundation-builder/docker-perdition:alpine
 
