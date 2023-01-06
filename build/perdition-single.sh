@@ -19,8 +19,16 @@ test -e perdition.crt.pem || (
    myhost=$(hostname -f)
    [[ -z "$myhost" ]] && myhost=$(hostname)
    [[ -z "$myhost" ]] && myhost=perdition.lan
-   [[ -z "$SELFSIGNED_CN" ]] && myhost=$SELFSIGNED_CN
-    openssl req -x509 -nodes -days 365 -subj '/C=XX/ST=STA/O=SelfSigned, Inc./CN='${myhost} -addext 'subjectAltName=DNS:www.'${myhost} -newkey rsa:4096 -keyout perdition.key.pem -out perdition.crt.pem 2>&1|grep -v -e '\.' -e -- '-'
+
+   [[ -z "$SELFSIGNED_CN" ]] || mycn=$SELFSIGNED_CN
+   [[ -z "$SELFSIGNED_CN" ]] || mycn=$myhost
+   
+   mysites=""
+   [[ "$myhost" = "$mycn" ]] || mysites="mail.${myhost},imap.${myhost},www.${myhost},${myhost}"
+   [[ "$myhost" = "$mycn" ]] && mysites="mail.${myhost},imap.${myhost},www.${myhost}"
+   echo "SSL:GEN:CN=${myhost}" >&2
+
+    openssl req -x509 -nodes -days 365 -subj '/C=XX/ST=STA/O=SelfSigned, Inc./CN='${mycn} -addext 'subjectAltName=DNS:'"$mysites" -newkey rsa:4096 -keyout perdition.key.pem -out perdition.crt.pem 2>&1|grep -v -e '\.' -e -- '-'
          ) &
   wait 
 
