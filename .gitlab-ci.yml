@@ -20,7 +20,7 @@ mirror-github:
     -  git clone --mirror $CI_REPOSITORY_URL
     # Mirror push it to the destination
 
-    -  teste -e $CI_PROJECT_NAME && cd $CI_PROJECT_NAME;test -e $CI_PROJECT_NAME.git &&  cd $CI_PROJECT_NAME.git ; ssh-agent bash -c " chmod 0600 ../mybasekey ;ssh-add ../mybasekey ;test -d $HOME && (test -d ${HOME}/.ssh || mkdir -p  $HOME/.ssh) || mkdir -p  $HOME/.ssh;(ssh-keyscan -t rsa,dsa,ecdsa github.com  ;ssh-keyscan -t rsa,dsa,ecdsa gitlab.com ) |tee  ~/.ssh/known_hosts ~/.ssh/ssh_known_hosts ;git push --force --mirror $MIRROR_REPOSITORY "
+    -  test -e $CI_PROJECT_NAME && cd $CI_PROJECT_NAME;test -e $CI_PROJECT_NAME.git &&  cd $CI_PROJECT_NAME.git ; ssh-agent bash -c " chmod 0600 ../mybasekey ;ssh-add ../mybasekey ;test -d $HOME && (test -d ${HOME}/.ssh || mkdir -p  $HOME/.ssh) || mkdir -p  $HOME/.ssh;(ssh-keyscan -t rsa,dsa,ecdsa github.com  ;ssh-keyscan -t rsa,dsa,ecdsa gitlab.com ) |tee  ~/.ssh/known_hosts ~/.ssh/ssh_known_hosts ;git push --force --mirror $MIRROR_REPOSITORY "
     - cd ..; rm -rf $CI_PROJECT_NAME.git $CI_PROJECT_NAME.git mybasekey
 
 
