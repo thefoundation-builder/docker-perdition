@@ -45,11 +45,14 @@ cat perdition.certificate.pem dhparams.pem > perdition.crt.pem
 test -e /etc/myimapproxy.conf || {  
 echo "GENERATING /etc/myimapproxy.conf"
 ( 
-#echo "server_hostname $IMAPTARGET" ; echo "server port 143";echo
 
-echo "server_hostname localhost" ;echo "server port 2143";echo
 
-echo 'connect_retries 10
+echo '
+protocol_log_filename /dev/stdout
+syslog_facility LOG_MAIL
+#syslog_prioritymask LOG_WARNING
+
+connect_retries 10
 connect_delay 5
 cache_size 3072
 listen_port 1143
@@ -58,19 +61,21 @@ listen_port 1143
 
 #server_port 143
 
-
 cache_expiration_time 300
 proc_username nobody
 proc_groupname nogroup
 stat_filename /var/run/pimpstats
-protocol_log_filename /dev/stdout
-syslog_facility LOG_MAIL
-#syslog_prioritymask LOG_WARNING
-send_tcp_keepalives no
+
+send_tcp_keepalives yes
 enable_select_cache yes
 foreground_mode yes
+
+##
+#send tls if login disabled
 #force_tls yes
 force_tls no
+##
+
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
@@ -90,10 +95,17 @@ tls_verify_server no
 #ipversion_only 6
 ## Various path options for SSL CA certificates/directories
 #
-#tls_ca_file /etc/ssl/certs/ca-bundle.crt
-#tls_ca_path /etc/ssl/certs/
+tls_ca_file /etc/ssl/certs/ca-bundle.crt
+tls_ca_path /etc/ssl/certs/
 #tls_cert_file /etc/ssl/certs/mycert.crt
-#tls_key_file /etc/ssl/certs/mycert.key') > /etc/myimapproxy.conf
+#tls_key_file /etc/ssl/certs/mycert.key'
+
+echo
+
+#echo "server_hostname $IMAPTARGET" ; echo "server port 143";echo
+
+echo "server_hostname 127.0.0.1" ;echo "server port 2143";echo
+) > /etc/myimapproxy.conf
 echo -n ; } ;
 
 
