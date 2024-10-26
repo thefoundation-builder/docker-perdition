@@ -105,16 +105,16 @@ tls_verify_server no
 
 echo
 
-#echo "server_hostname $IMAPTARGET" ; echo "server_port 143";echo
+echo "server_hostname $IMAPTARGET" ; echo "server_port 143";echo
 
 #echo "server_hostname 127.0.0.1" ;echo "server_port 2143";echo
-echo "server_hostname 127.0.0.1" ;echo "server_port 143";echo
+#echo "server_hostname 127.0.0.1" ;echo "server_port 143";echo
 ) > /etc/myimapproxy.conf
 echo -n ; } ;
 
-#socat unix-listen:/dev/log,fork,reuseaddr stdout | sed 's/\r/\n/g' &
-socat unix-listen:/dev/log,fork,reuseaddr stdout &>/dev/null  &
-socat unix-listen:/dev/log,fork,reuseaddr stdout  &
+#socat unix-listen:/dev/log,fork,reuseaddr,unlink-early stdout | sed 's/\r/\n/g' &
+socat unix-listen:/dev/log,fork,reuseaddr,unlink-early stdout &>/dev/null  &
+socat unix-listen:/dev/log,fork,reuseaddr,unlink-early stdout  &
 
 ##non-ssl imap with pre-sent starttls  to port 2143
 for  rport in 2143:143;do 
