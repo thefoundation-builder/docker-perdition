@@ -44,13 +44,15 @@ cat perdition.certificate.pem dhparams.pem > perdition.crt.pem
 
 test -e /etc/myimapproxy.conf || {  
 echo "GENERATING /etc/myimapproxy.conf"
-( 
-
-
-echo '
+( echo '
+###protocol_log_filename /dev/stdout
+###protocol_log_filename /dev/log
+##protocol_log_filename /etc/imaplog
 protocol_log_filename /dev/stdout
-syslog_facility LOG_MAIL
-#syslog_prioritymask LOG_WARNING
+
+##
+###syslog_facility LOG_MAIL
+syslog_prioritymask LOG_WARNING
 
 connect_retries 10
 connect_delay 5
@@ -80,9 +82,10 @@ chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
 #tls_ca_file /etc/ssl/certs/ca-bundle.crt
-#tls_ca_path /etc/ssl/certs/
-#tls_cert_file /etc/perdition/perdition.crt.pem
-#tls_key_file  /etc/perdition/perdition.key.pem
+tls_ca_file /etc/ssl/certs/ca-certificates.crt
+tls_ca_path /etc/ssl/certs/
+tls_cert_file /etc/perdition/perdition.crt.pem
+tls_key_file  /etc/perdition/perdition.key.pem
 tls_verify_server no
 #tls_ciphers ALL:!aNULL:!eNULL
 #tls_no_tlsv1 no
@@ -95,19 +98,23 @@ tls_verify_server no
 #ipversion_only 6
 ## Various path options for SSL CA certificates/directories
 #
-tls_ca_file /etc/ssl/certs/ca-bundle.crt
-tls_ca_path /etc/ssl/certs/
+#tls_ca_file /etc/ssl/certs/ca-bundle.crt
+#tls_ca_path /etc/ssl/certs/
 #tls_cert_file /etc/ssl/certs/mycert.crt
 #tls_key_file /etc/ssl/certs/mycert.key'
 
 echo
 
-#echo "server_hostname $IMAPTARGET" ; echo "server port 143";echo
+#echo "server_hostname $IMAPTARGET" ; echo "server_port 143";echo
 
-echo "server_hostname 127.0.0.1" ;echo "server port 2143";echo
+#echo "server_hostname 127.0.0.1" ;echo "server_port 2143";echo
+echo "server_hostname 127.0.0.1" ;echo "server_port 143";echo
 ) > /etc/myimapproxy.conf
 echo -n ; } ;
 
+#socat unix-listen:/dev/log,fork,reuseaddr stdout | sed 's/\r/\n/g' &
+socat unix-listen:/dev/log,fork,reuseaddr stdout &>/dev/null  &
+socat unix-listen:/dev/log,fork,reuseaddr stdout  &
 
 ##non-ssl imap with pre-sent starttls  to port 2143
 for  rport in 2143:143;do 
