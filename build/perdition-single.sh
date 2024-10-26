@@ -74,13 +74,14 @@ foreground_mode yes
 
 ##
 #send tls if login disabled
-#force_tls yes
-force_tls no
+force_tls yes
+#force_tls no
 ##
 
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
+## Various path options for SSL CA certificates/directories
 #tls_ca_file /etc/ssl/certs/ca-bundle.crt
 tls_ca_file /etc/ssl/certs/ca-certificates.crt
 tls_ca_path /etc/ssl/certs/
@@ -96,12 +97,7 @@ tls_verify_server no
 #auth_shared_secret
 #dns_rr yes
 #ipversion_only 6
-## Various path options for SSL CA certificates/directories
-#
-#tls_ca_file /etc/ssl/certs/ca-bundle.crt
-#tls_ca_path /etc/ssl/certs/
-#tls_cert_file /etc/ssl/certs/mycert.crt
-#tls_key_file /etc/ssl/certs/mycert.key'
+'
 
 echo
 
