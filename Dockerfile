@@ -1,7 +1,8 @@
 FROM ubuntu:bionic
 #FROM ubuntu:20.04
 
-RUN apt-get update && apt-get -y install iproute2 net-tools strace imapproxy perdition curl bash socat openssl && apt-get -y clean all 
+RUN apt-get update && apt-get -y install iproute2 net-tools strace imapproxy perdition curl bash socat openssl && rm -rf /var/lib/apt/archives/*.deb
+#&& apt-get -y clean all 
 
 #FROM alpine
 #RUN apk --no-cache upgrade && apk --no-cache add perdition  iproute2 socat bash openssl  curl
