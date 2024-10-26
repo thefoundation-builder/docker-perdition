@@ -44,15 +44,19 @@ cat perdition.certificate.pem dhparams.pem > perdition.crt.pem
 
 test -e /etc/myimapproxy.conf || {  
 ( 
-echo "server_hostname $IMAPTARGET" 
-#echo "server_hostname 127.0.0.1" 
+#echo "server_hostname $IMAPTARGET" 
+
+echo "server_hostname 127.0.0.1" 
 echo 'connect_retries 10
 connect_delay 5
 cache_size 3072
 listen_port 1143
 #listen_address 127.0.0.1
 # 
-server_port 143
+
+#server_port 143
+server port 2143
+
 cache_expiration_time 300
 proc_username nobody
 proc_groupname nogroup
@@ -95,7 +99,7 @@ for  rport in 2143:143;do
   ( while (true) ;do  
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr OPENSSL-CONNECT:$IMAPTARGET:${rport/*:/},verify=0
-    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls imap -quiet -connect '$IMAPTARGET'\:'${rport/*:/} 2>&1|grep -i -e OK -e rror | while read logline;do echo $(date -u +%c" imap.socat: ")"$logline";done
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls imap -quiet -connect '$IMAPTARGET'\:'${rport/*:/} 2>&1|grep -i -e OK -e rror |grep -v -e "Pre-login capabilities listed, post-login capabilitie" | while read logline;do echo $(date -u +%c" imap.socat: ")"$logline";done
     sleep 1;
    done ) &
 done
@@ -105,7 +109,7 @@ for  rport in 4192:4190;do
   ( while (true) ;do  
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},bind=$(ip a |grep global|grep -v inet6|cut -d"/" -f1|cut -dt -f2 |sed "s/ //g" ),fork,reuseaddr TCP-CONNECT:$IMAPTARGET:${rport/:*/};
     #socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr OPENSSL-CONNECT:$IMAPTARGET:${rport/*:/},verify=0
-    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls sieve -quiet -connect '$IMAPTARGET'\:'${rport/*:/} 2>&1|grep -i -e OK -e rror | while read logline;do echo $(date -u +%c" managesieve.socat: ")"$logline";done
+    socat TCP-LISTEN:${PREFIX}${rport/:*/},fork,reuseaddr EXEC:'openssl s_client -ign_eof -starttls sieve -quiet -connect '$IMAPTARGET'\:'${rport/*:/} 2>&1|grep -i -e OK -e rror|grep -v -e "Begin TLS negotiation now" | while read logline;do echo $(date -u +%c" managesieve.socat: ")"$logline";done
     sleep 1;
    done ) &
 done
