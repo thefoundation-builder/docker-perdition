@@ -43,10 +43,12 @@ cat perdition.certificate.pem dhparams.pem > perdition.crt.pem
 )
 
 test -e /etc/myimapproxy.conf || {  
+echo "GENERATING /etc/myimapproxy.conf"
 ( 
-#echo "server_hostname $IMAPTARGET" 
+#echo "server_hostname $IMAPTARGET" ; echo "server port 143";echo
 
-echo "server_hostname 127.0.0.1" 
+echo "server_hostname localhost" ;echo "server port 2143";echo
+
 echo 'connect_retries 10
 connect_delay 5
 cache_size 3072
@@ -55,7 +57,7 @@ listen_port 1143
 # 
 
 #server_port 143
-server port 2143
+
 
 cache_expiration_time 300
 proc_username nobody
@@ -67,7 +69,8 @@ syslog_facility LOG_MAIL
 send_tcp_keepalives no
 enable_select_cache yes
 foreground_mode yes
-force_tls yes
+#force_tls yes
+force_tls no
 chroot_directory /var/lib/imapproxy/chroot
 #preauth_command
 enable_admin_commands no
@@ -151,7 +154,7 @@ for rport in 1143:143 ;do
 #echo  perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/:*/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive
 #      perdition.imap4s --ssl_mode tls_all_force --connect_relog 600 --no_daemon --protocol IMAP4 -f /tmp/null  --outgoing_server $IMAPTARGET --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  -F '+'  --pid_file /tmp/perdition.${rport/:*/}.pid --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive --no_bind_banner --server_resp_line  2>&1|logfilter
 /usr/sbin/imapproxyd -f /etc/myimapproxy.conf -p /tmp/imapproxy.pid;
-sleep 1;
+sleep 2;
 done ) &
 
 for rport in 143:1143 ;do
