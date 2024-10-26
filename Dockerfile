@@ -15,7 +15,7 @@ RUN apt-get update && apt-get -y install iproute2 net-tools imapproxy perdition 
 ##RUN which bridge
 COPY build/perdition-single.sh /perdition-single.sh
 ##COPY build/tormail_subdomain.sh /tormail_subdomain.sh
-EXPOSE 143 993 4190 4191 4192
+EXPOSE 143 993 1143 2143 4190 4191 4192
 
 LABEL org.opencontainers.image.source="https://gitlab.com/the-foundation/docker-perdition" 
 LABEL org.opencontainers.image.description="docker-perdition multiarch ubuntu version . over 100MB"
