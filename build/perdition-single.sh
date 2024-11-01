@@ -177,21 +177,22 @@ for rport in 143:1143 ;do
 ( while (true) ;do  
 echo  perdition.imap4 --ssl_mode tls_listen \
                       --connect_relog 600 \
-                      --no_daemon --protocol IMAP4 \
-                      -f /tmp/null  \
+                      --no_daemon  --protocol IMAP4 -f /tmp/null \
+                      --imap_capability "IMAP4rev1  LOGIN-REFERRALS ID ENABLE IDLE LITERAL+ AUTH=PLAIN AUTH=LOGIN" \
                       --outgoing_server 127.0.0.1 \
                       --outgoing_port ${PREFIX}${rport/*:/} --listen_port ${rport/:*/}  \
                       -F '+'  --pid_file /tmp/perdition.${rport/:*/}.pid \
                       --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify         --tcp_keepalive --no_bind_banner 
       perdition.imap4 --ssl_mode tls_listen \
-                      --connect_relog 600 --no_daemon \
-                      --protocol IMAP4 -f /tmp/null  \
+                      --connect_relog 600 \
+                      --no_daemon  --protocol IMAP4 -f /tmp/null \
+                      --imap_capability "IMAP4rev1  LOGIN-REFERRALS ID ENABLE IDLE LITERAL+ AUTH=PLAIN AUTH=LOGIN" \
                       --outgoing_server 127.0.0.1 \
                       --outgoing_port ${PREFIX}${rport/*:/} \
                       --listen_port ${rport/:*/}  -F '+'  \
                       --pid_file /tmp/perdition.${rport/:*/}.pid \
                       --ssl_no_cert_verify --ssl_no_client_cert_verify --ssl_no_cn_verify        --tcp_keepalive --no_bind_banner --server_resp_line  2>&1|logfilter
-
+#                      --imap_capability "IMAP4rev1 SASL-IR LOGIN-REFERRALS ID ENABLE IDLE LITERAL+ AUTH=PLAIN AUTH=LOGIN"
 sleep 1;
 done ) &
 done
